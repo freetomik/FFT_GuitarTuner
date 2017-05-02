@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="89.0" prefWidth="256.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="guitartuner.GUIController">
+	<children>
+		<Button fx:id="startButton" layoutX="31.0" layoutY="75.0" onAction="#handleStartButtonAction" text="Start" />
+		<Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
+      <Button fx:id="stopButton" layoutX="79.0" layoutY="75.0" onAction="#handleStopButtonAction" text="Stop" />
+      <Button fx:id="ctrlPanelButton" layoutX="134.0" layoutY="75.0" onAction="#handleCtrlPanelButtonAction" text="Control Panel" />
+      <ComboBox fx:id="driverComboBox" layoutX="59.0" layoutY="25.0" prefWidth="150.0" />
+	</children>
+</AnchorPane>
