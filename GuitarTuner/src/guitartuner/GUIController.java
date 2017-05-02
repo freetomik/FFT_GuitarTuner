@@ -82,13 +82,38 @@ public class GUIController extends Application {
             }
         });
         
+        Button btnPlayE2 = new Button("E2");
+        btnPlayE2.setOnAction(new EventHandler<ActionEvent>() {            
+            @Override
+            public void handle(ActionEvent event) {toneGen.playE2();}});
+        Button btnPlayA2 = new Button("A2");
+        btnPlayA2.setOnAction(new EventHandler<ActionEvent>() {            
+            @Override
+            public void handle(ActionEvent event) {toneGen.playA2();}});
+        Button btnPlayD3 = new Button("D3");
+        btnPlayD3.setOnAction(new EventHandler<ActionEvent>() {            
+            @Override
+            public void handle(ActionEvent event) {toneGen.playD3();}});
+        Button btnPlayG3 = new Button("G3");
+        btnPlayG3.setOnAction(new EventHandler<ActionEvent>() {            
+            @Override
+            public void handle(ActionEvent event) {toneGen.playG3();}});
+        Button btnPlayB3 = new Button("B3");
+        btnPlayB3.setOnAction(new EventHandler<ActionEvent>() {            
+            @Override
+            public void handle(ActionEvent event) {toneGen.playB3();}});
+        Button btnPlayE4 = new Button("E4");
+        btnPlayE4.setOnAction(new EventHandler<ActionEvent>() {            
+            @Override
+            public void handle(ActionEvent event) {toneGen.playE4();}});        
+        
         StackPane root = new StackPane();
         //root.getChildren().add(driversCombo);
-        h.getChildren().addAll(btnPlay, btnStop, btnControl);
+        h.getChildren().addAll(btnPlay, btnStop,btnPlayE2, btnPlayA2, btnPlayD3, btnPlayG3, btnPlayB3, btnPlayE4 , btnControl);
         root.getChildren().add(h);
         ////////////////////////////////////////////////////////////
 
-        Scene scene = new Scene(root, 300,250);
+        Scene scene = new Scene(root, 400,250);
 
         this.stage.setScene(scene);
         this.stage.setTitle("Tone generator");
