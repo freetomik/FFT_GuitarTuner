@@ -7,6 +7,9 @@ package guitartuner;
 
 //import java.net.URL;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,8 +21,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -30,13 +38,19 @@ import javafx.stage.WindowEvent;
 public class GUIController extends Application {
 
     private Stage stage;
-    //private FXMLLoader fxmlLoader;
     private ToneGenerator toneGen;
+	private ToneRecognizer toneRecg;
+
+	private Text toneFreqText;
+
+    private StringProperty toneFreqStr;
+    private Label toneFreqLabel;
 
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         toneGen = new ToneGenerator();
+		toneRecg = new ToneRecognizer(this);
         System.out.println("start()");
         ////////////////////////////////////////////////////////////
         /*ObservableList driverList = FXCollections.observableArrayList("ASIO4ALL v2");
@@ -85,7 +99,48 @@ public class GUIController extends Application {
         StackPane root = new StackPane();
         //root.getChildren().add(driversCombo);
         h.getChildren().addAll(btnPlay, btnStop, btnControl);
+
+		HBox h2 = new HBox();
+        
+        Button btnTune = new Button();
+        btnTune.setText("Tune");
+        btnTune.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                toneRecg.startAsio("ASIO4ALL v2", 440);
+            }
+        });
+
+        Button btnTuneStop = new Button();
+        btnTuneStop.setText("Stop tuning");
+        btnTuneStop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                toneRecg.shutdownDriver();
+            }
+        });
+
+        h2.getChildren().addAll(btnTune, btnTuneStop);
+		h2.setLayoutX(50);
+		h2.setLayoutY(50);
+
+//		toneFreqText = new Text();
+//		toneFreqText.setText("Hello World!");
+//		toneFreqText.setFont(Font.font("Verdana", 20));
+//		toneFreqText.setFill(Color.RED);
+//		toneFreqText.setLayoutX(50);
+//		toneFreqText.setLayoutY(50);
+
+		toneFreqLabel = new Label();
+        toneFreqStr = new SimpleStringProperty();
+//		toneFreqText.setFill(Color.BLUE);
+        toneFreqStr.set("Label");
+        toneFreqLabel.textProperty().bind(toneFreqStr);
+
         root.getChildren().add(h);
+        root.getChildren().add(h2);
+//        root.getChildren().add(toneFreqText);
+        root.getChildren().add(toneFreqLabel);
         ////////////////////////////////////////////////////////////
 
         Scene scene = new Scene(root, 300,250);
@@ -106,6 +161,20 @@ public class GUIController extends Application {
         System.out.println("stop(): Stage is closing");
     }
 
+    public void updateText(double freq){
+        Platform.runLater(() -> {
+//			if(freq > 20 && freq < 2000){
+//				toneFreqText.setText(String.format("%,.2f", freq)+"Hz");
+				toneFreqStr.set(String.format("%,.2f", freq)+"Hz");
+//            }
+//            else{
+//                toneFreqText.setText("out");
+//				toneFreqStr.set("none");
+//            }    
+        }
+        );
+    }
+    
     /**
      * @param args the command line arguments
      */

@@ -45,7 +45,7 @@ public class ToneRecognizerTest {
 	@Test
 	public void testTune() {
 		System.out.println("tune");
-		ToneRecognizer instance = new ToneRecognizer();
+		ToneRecognizer instance = new ToneRecognizer(null);
 		double sampleRates[] = {8000.0, 16000.0, 32000.0, 44100.0, 48000.0};
 
 		for(int s = 0; s < sampleRates.length; s++) {

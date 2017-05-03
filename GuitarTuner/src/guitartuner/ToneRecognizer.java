@@ -10,6 +10,7 @@ import com.synthbot.jasiohost.AsioChannel;
 import com.synthbot.jasiohost.AsioDriver;
 import com.synthbot.jasiohost.AsioDriverState;
 import com.synthbot.jasiohost.AsioException;
+import java.util.HashSet;
 import java.util.Set;
 import org.jtransforms.fft.DoubleFFT_1D;
 
@@ -40,15 +41,26 @@ public class ToneRecognizer implements AsioDriverListener {
 	private int sampleIndex;
 	private double sinusFreq;
    
-	// TODO: add constructor
-	public ToneRecognizer() {
-		bufferSize = 512;
-		sampleRate = 44100.0;
-		sampleIndex = 0;
-		sinusFreq = 440.0;
+	public ToneRecognizer(GUIController ctrl) {
+//		buffersize = 512;
+//		samplerate = 44100.0;
+//		sampleindex = 0;
+//		sinusfreq = 440.0;
+//        fftbuffersize = 16384;
+//		outputtest = new double[fftbuffersize];
+//        fft = new doublefft_1d(fftbuffersize);
+        host = this;
+        controller = ctrl;
+        runRecognizer = true;
+        bufferCount = 8;
+        activeChannels = new HashSet<AsioChannel>();
         fftBufferSize = 16384;
-		outputTest = new double[fftBufferSize];
         fft = new DoubleFFT_1D(fftBufferSize);
+        fftBuffer = new double[bufferCount] [fftBufferSize];
+        index = new int[bufferCount];
+        for(int i=0;i<bufferCount;i++){
+            index[i]=i*fftBufferSize/bufferCount;
+        }
 	}
 
 
@@ -81,49 +93,40 @@ public class ToneRecognizer implements AsioDriverListener {
 	@Override
 	public void bufferSwitch(long sampleTime, long samplePosition, Set<AsioChannel> activeChannels) {
         for (AsioChannel channelInfo : activeChannels) {
-            if(runRecognizer){
-                if (!channelInfo.isInput()){
-//                    if(controller.canPlay()){
-                        channelInfo.write(output);
-//                    }
-                }
-                else{
-                    if(channelInfo.getChannelIndex()==0){
-                        channelInfo.read(output);
-                        for(int i=0;i<bufferSize; i++){
-                            for(int j=0;j<bufferCount;j++){
-                                if (index[j]==fftBufferSize)
-                                    break;
-                            }
-                            for(int j=0;j<bufferCount;j++){
-                                fftBuffer[j][index[j]] = output[i];
-                            }
-                            for(int j=0;j<bufferCount;j++){
-                                index[j]++;
-                            }
-                        }
-                        for(int i=0;i<bufferCount;i++){
-                            if (index[i]== fftBufferSize){
-                                fftBuffer[i] = applyHannWindow(fftBuffer[i]);
-                                fft.realForward(fftBuffer[i]);
-                                double[] fftData = fftAbs(fftBuffer[i]);                         
+//            if(runRecognizer){
+//				if(channelInfo.getChannelIndex()==0){
+				if(channelInfo.isInput()){
+					channelInfo.read(output);
+					// circular buffer implementation
+					for(int i=0;i<bufferSize; i++){
+						for(int j=0;j<bufferCount;j++){ //this for loop is unneccesary IMO
+							if (index[j]==fftBufferSize)
+								break;
+						}
+						for(int j=0;j<bufferCount;j++){
+							fftBuffer[j][index[j]] = output[i];
+						}
+						for(int j=0;j<bufferCount;j++){
+							index[j]++;
+						}
+					}
+					for(int i=0;i<bufferCount;i++){
+						if (index[i]== fftBufferSize){
+							fftBuffer[i] = applyHannWindow(fftBuffer[i]);
+							fft.realForward(fftBuffer[i]);
+							double[] fftData = fftAbs(fftBuffer[i]);                         
 
-								int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
-								double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
-								// controller.updateFreqLabel(baseFrequency);
-                                index[i]=0;
-                            }
-                        }
-                    }
-                }
-            }
-            else{
-                if (!channelInfo.isInput()){
-                    for(int i=0;i<output.length;i++)
-                        output[i] = 0;
-                    channelInfo.write(output);
-                }
-            }
+							int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
+							double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
+							controller.updateText(baseFrequency);
+
+//							System.out.println(baseFrequency);
+
+							index[i]=0;
+						}
+					}
+				}
+//            }
         }
 	}
 
