@@ -31,14 +31,20 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
 
 	private AsioDriver asioDriver;
 	private Set<AsioChannel> activeChannels;
+        private double frequency;
 	private int sampleIndex;
 	private int bufferSize;
 	private double sampleRate;
 	private float[] output;
 
+        public enum guitarTones{
+            E2, A2, D3, G3, B3, E4
+        }
+        
 	public ToneGenerator() {
 		System.out.println("ToneGeneratorController constructor");
 		this.activeChannels = new HashSet<AsioChannel>();
+                frequency = 440.0; // Hz
 //		ObservableList<String> driverList =
 //			FXCollections.observableList(AsioDriver.getDriverNames());
 	}
@@ -60,10 +66,34 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
                 output = new float[bufferSize];
                 asioDriver.createBuffers(activeChannels);
                 asioDriver.start();
-            }
-		
+            }		
 	}
-	
+        
+        public void playE2(){
+            setToneTo(guitarTones.E2);
+            this.play();
+        }        
+        public void playA2(){
+            setToneTo(guitarTones.A2);
+            this.play();
+        }
+        public void playD3(){
+            setToneTo(guitarTones.D3);
+            this.play();
+        }
+        public void playG3(){
+            setToneTo(guitarTones.G3);
+            this.play();
+        }
+	public void playB3(){
+            setToneTo(guitarTones.B3);
+            this.play();
+        }
+        public void playE4(){
+            setToneTo(guitarTones.E4);
+            this.play();
+        }
+        
 	public void stop() {
             System.out.println("stop()");
             if (asioDriver != null) {
@@ -97,7 +127,7 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
 	@Override
 	public void bufferSwitch(long systemTime, long samplePosition, Set<AsioChannel> channels) {
 		for (int i = 0; i < bufferSize; i++, sampleIndex++) {
-		  output[i] = (float) Math.sin(2 * Math.PI * sampleIndex * 440.0 / sampleRate);
+		  output[i] = (float) Math.sin(2 * Math.PI * sampleIndex * frequency / sampleRate);
 		}
 		channels.forEach((channelInfo) -> {
 			channelInfo.write(output);
@@ -143,4 +173,28 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
 		System.out.println("sampleRateDidChange() callback received.");
 	}
 
+        public void setToneTo(guitarTones tone){
+            switch (tone){
+                case E2:
+                    frequency = 82.41*4;
+                    break;
+                case A2:
+                    frequency = 110*4;
+                    break;
+                case D3:
+                    frequency = 146.8*4;
+                    break;
+                case G3:
+                    frequency = 196*4;
+                    break;
+                case B3:
+                    frequency = 246.9*4;
+                    break;
+                case E4:
+                    frequency = 329.6*4;
+                    break;
+                default:
+                    frequency = 110*4;    
+            }
+        }
 }
