@@ -1,5 +1,5 @@
 # MUL
-guitar tuner - school project for course Multimedia
+FFT guitar tuner - school project for course Multimedia
 
 ## TODO
 - whole tuning mechanism **TH**
@@ -13,9 +13,9 @@ guitar tuner - school project for course Multimedia
   - slider for setting relative frequency
   - tuning indicator - tone name and arrow showing deviation in cents
 - calculation with relative frequency for tuning and generating **MD**
-- ~~tone generation **MD**
+- ~~tone generation~~ **MD**
 
-- write documentation
+### Documentation
   - describe theory behind tuning (FFT, HPS) **TH**
   - describe application GUI and controls **MD**
 
