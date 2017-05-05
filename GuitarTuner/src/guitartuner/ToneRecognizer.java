@@ -53,7 +53,7 @@ public class ToneRecognizer implements AsioDriverListener {
         host = this;
         controller = mainPanel;
         runRecognizer = true;
-        bufferCount = 8;
+        bufferCount = 1;
         activeChannels = new HashSet<AsioChannel>();
         fftBufferSize = 16384;
         fft = new DoubleFFT_1D(fftBufferSize);
@@ -118,10 +118,11 @@ public class ToneRecognizer implements AsioDriverListener {
 							double[] fftData = fftAbs(fftBuffer[i]);                         
 
 							int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
-							double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
-							controller.updateText(baseFrequency);
+//							int baseFrequencyIndex = getBaseFrequencyIndexHPS(fftData);
 
-//							System.out.println(baseFrequency);
+							double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
+							baseFrequency /= 2;		// only one half of spectrum is examined 
+							controller.updateText(baseFrequency);
 
 							index[i]=0;
 						}
@@ -158,8 +159,8 @@ public class ToneRecognizer implements AsioDriverListener {
 
 	// taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
     private static double[] fftAbs(double[] buffer){
-        double[] fftAbs = new double[fftBufferSize/2]; 
-        for(int i=0;i<fftBufferSize/2;i++){
+        double[] fftAbs = new double[fftBufferSize/2]; 	// due to symmetry, fft.realForward() computes only 1.half
+        for(int i=0;i<fftAbs.length;i++){
             double re = buffer[2*i];
             double im = buffer[2*i+1];
             fftAbs[i] = Math.sqrt(re*re+im*im);
@@ -177,6 +178,28 @@ public class ToneRecognizer implements AsioDriverListener {
         return out;
     }
 
+
+	// Harmonic Product Spectrum method of finding fundamental frequency of tone
+	// from thesis FFT Guitar Tuner by Jeff Wang and Kay-Won Chang
+	// and http://musicweb.ucsd.edu/~trsmyth/analysis/Harmonic_Product_Spectrum.html
+	private int getBaseFrequencyIndexHPS(double[] spectrum) {
+		double maxVal = Double.NEGATIVE_INFINITY;
+		int maxInd = 0;
+		int limit = spectrum.length / 3;
+		for(int i = 0; i < limit; i++) {
+			// product does not work correctly, gives integer multiplies of base frequency (harmonics)
+			// product of base freq and 2 harmonics
+//			double product = spectrum[i] * spectrum[2*i] * spectrum[3*i];
+			// sum works better than product
+			double sum = spectrum[i] + spectrum[2*i] + spectrum[3*i];
+			if(maxVal < sum) {
+				maxVal = spectrum[i];
+				maxInd = i;
+			}
+		}
+		return maxInd;
+	}
+
 	private int getBaseFrequencyIndex(double[] spectrum) {
 		double maxVal = Double.NEGATIVE_INFINITY;
 		int maxInd = 0;
@@ -186,6 +209,15 @@ public class ToneRecognizer implements AsioDriverListener {
 				maxInd = i;
 			}
 		}
+		// Interpolate (https://gist.github.com/akuehntopf/4da9bced2cb88cfa2d19#file-hps-java-L144)
+		// not necessary, does not help, gives the same results
+//		double mid = spectrum[maxInd];
+//		double left  = spectrum[maxInd- 1];
+//		double right = spectrum[maxInd + 1];
+//		double shift = 0.5f*(right-left) / ( 2.0f*mid - left - right );
+//		maxInd = (int) Math.round(maxInd + shift);
+		// maybe useful can be quadratic interpolation:
+		// http://musicweb.ucsd.edu/~trsmyth/analysis/Quadratic_interpolation.html
 		return maxInd;
 	}
 
@@ -199,8 +231,9 @@ public class ToneRecognizer implements AsioDriverListener {
         if (asioDriver == null) {
             try{
                 asioDriver = AsioDriver.getDriver(driver);
-                if (asioDriver.canSampleRate(48000))
-                    asioDriver.setSampleRate(48000);
+                // the lower sample rate, the better tuning accuracy, but longer time to fill the buffer
+                if (asioDriver.canSampleRate(8000))
+                    asioDriver.setSampleRate(8000);
                 asioDriver.addAsioDriverListener(host);
                 activeChannels.add(asioDriver.getChannelOutput(0));
                 activeChannels.add(asioDriver.getChannelOutput(1));
