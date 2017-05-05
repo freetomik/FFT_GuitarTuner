@@ -2,17 +2,17 @@
 FFT guitar tuner - school project for course Multimedia
 
 ## TODO
-- whole tuning mechanism **TH**
+- ~~whole tuning mechanism~~ **TH**
   - ~~sampling cca 20-40ms of live input signal into buffer~~
   - ~~FFT over buffer to get frequency spectrum~~
-  - finding fundamental frequency by examining peaks in spectrum:
+  - ~~finding fundamental frequency by examining peaks in spectrum:~~
     - ~~highest peak~~
-    - Harmonic Product Spectrum method
+    - ~~Harmonic Product Spectrum method~~
 - GUI **MD**
   - ~~buttons for tones generating~~
-  - slider for setting relative frequency
+  - ~~slider for setting relative frequency~~
   - tuning indicator - tone name and arrow showing deviation in cents
-- calculation with relative frequency for tuning and generating **MD**
+- calculation with relative frequency for tuning ~~and generating~~ **MD**
 - ~~tone generation~~ **MD**
 
 ### Documentation
