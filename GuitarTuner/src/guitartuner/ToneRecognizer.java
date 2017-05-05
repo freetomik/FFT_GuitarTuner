@@ -53,7 +53,7 @@ public class ToneRecognizer implements AsioDriverListener {
         host = this;
         controller = mainPanel;
         runRecognizer = true;
-        bufferCount = 8;
+        bufferCount = 1;
         activeChannels = new HashSet<AsioChannel>();
         fftBufferSize = 16384;
         fft = new DoubleFFT_1D(fftBufferSize);
@@ -119,6 +119,7 @@ public class ToneRecognizer implements AsioDriverListener {
 
 							int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
 							double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
+							baseFrequency /= 2;		// only one half of spectrum is examined 
 							controller.updateText(baseFrequency);
 
 //							System.out.println(baseFrequency);
@@ -158,7 +159,7 @@ public class ToneRecognizer implements AsioDriverListener {
 
 	// taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
     private static double[] fftAbs(double[] buffer){
-        double[] fftAbs = new double[fftBufferSize/2]; 
+        double[] fftAbs = new double[fftBufferSize/2]; 	// due to symmetry, fft.realForward() computes only 1.half
         for(int i=0;i<fftBufferSize/2;i++){
             double re = buffer[2*i];
             double im = buffer[2*i+1];
@@ -199,8 +200,9 @@ public class ToneRecognizer implements AsioDriverListener {
         if (asioDriver == null) {
             try{
                 asioDriver = AsioDriver.getDriver(driver);
-                if (asioDriver.canSampleRate(48000))
-                    asioDriver.setSampleRate(48000);
+                // the lower sample rate, the better tuning accuracy, but longer time to fill the buffer
+                if (asioDriver.canSampleRate(8000))
+                    asioDriver.setSampleRate(8000);
                 asioDriver.addAsioDriverListener(host);
                 activeChannels.add(asioDriver.getChannelOutput(0));
                 activeChannels.add(asioDriver.getChannelOutput(1));
