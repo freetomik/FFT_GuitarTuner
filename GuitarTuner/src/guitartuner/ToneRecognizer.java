@@ -10,6 +10,7 @@ import com.synthbot.jasiohost.AsioChannel;
 import com.synthbot.jasiohost.AsioDriver;
 import com.synthbot.jasiohost.AsioDriverState;
 import com.synthbot.jasiohost.AsioException;
+import guitartuner.gui.MainPanel;
 import java.util.HashSet;
 import java.util.Set;
 import org.jtransforms.fft.DoubleFFT_1D;
@@ -36,12 +37,12 @@ public class ToneRecognizer implements AsioDriverListener {
     private AsioDriverListener host;
     private boolean runRecognizer;
     public static double thresholdValue;
-    GUIController controller;
+    MainPanel controller;
     
 	private int sampleIndex;
 	private double sinusFreq;
    
-	public ToneRecognizer(GUIController ctrl) {
+	public ToneRecognizer(MainPanel mainPanel) {
 //		buffersize = 512;
 //		samplerate = 44100.0;
 //		sampleindex = 0;
@@ -50,7 +51,7 @@ public class ToneRecognizer implements AsioDriverListener {
 //		outputtest = new double[fftbuffersize];
 //        fft = new doublefft_1d(fftbuffersize);
         host = this;
-        controller = ctrl;
+        controller = mainPanel;
         runRecognizer = true;
         bufferCount = 8;
         activeChannels = new HashSet<AsioChannel>();

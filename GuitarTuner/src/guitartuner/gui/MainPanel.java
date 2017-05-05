@@ -6,6 +6,10 @@
 package guitartuner.gui;
 
 import guitartuner.ToneGenerator;
+import guitartuner.ToneRecognizer;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -20,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -51,11 +56,17 @@ public class MainPanel extends StackPane{
     private Label labelFreq;
     private Label labelFreqVal;
     
+    private ToneRecognizer toneRecg;
+    private Text toneFreqText;
+    private StringProperty toneFreqStr;
+    private Label toneFreqLabel;
+    
     private ToneGenerator toneGen;
     
     public MainPanel(){
         
         this.toneGen = new ToneGenerator();
+        toneRecg = new ToneRecognizer(this);
         
         pane = new BorderPane();
         topHB = new HBox();
@@ -149,7 +160,52 @@ public class MainPanel extends StackPane{
         btnPlayE4.setMaxWidth(Double.MAX_VALUE);
         btnPlayE4.setOnAction(new EventHandler<ActionEvent>() {            
             @Override
-            public void handle(ActionEvent event) {toneGen.playE4();}});        
+            public void handle(ActionEvent event) {toneGen.playE4();}});   
+        
+        //////////////////////////////////////////////////////////
+        
+        VBox v2 = new VBox();
+        
+        Button btnTune = new Button();
+        btnTune.setText("Tune");
+        btnTune.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                toneRecg.startAsio("ASIO4ALL v2", 440);
+            }
+        });
+
+        Button btnTuneStop = new Button();
+        btnTuneStop.setText("Stop tuning");
+        btnTuneStop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                toneRecg.shutdownDriver();
+            }
+        });
+
+        v2.getChildren().addAll(btnTune, btnTuneStop);
+	v2.setLayoutX(50);
+	v2.setLayoutY(50);
+
+//		toneFreqText = new Text();
+//		toneFreqText.setText("Hello World!");
+//		toneFreqText.setFont(Font.font("Verdana", 20));
+//		toneFreqText.setFill(Color.RED);
+//		toneFreqText.setLayoutX(50);
+//		toneFreqText.setLayoutY(50);
+
+	toneFreqLabel = new Label();
+        toneFreqStr = new SimpleStringProperty();
+//		toneFreqText.setFill(Color.BLUE);
+        toneFreqStr.set("Label");
+        toneFreqLabel.textProperty().bind(toneFreqStr);
+        //this.getChildren().add(v2);
+//        root.getChildren().add(toneFreqText);
+        //this.getChildren().add(toneFreqLabel);
+        v2.getChildren().add(toneFreqLabel);
+        
+        //////////////////////////////////////////////////////////
         
         topHB.getChildren().addAll(labelTitle);
         topHB.setAlignment(Pos.CENTER);
@@ -164,8 +220,23 @@ public class MainPanel extends StackPane{
         
         pane.setTop(topHB);
         pane.setLeft(leftVB);
+        pane.setRight(v2);
         pane.setBottom(bottomVB);
         
         this.getChildren().add(pane);
+    }
+    
+    public void updateText(double freq){
+        Platform.runLater(() -> {
+//			if(freq > 20 && freq < 2000){
+//				toneFreqText.setText(String.format("%,.2f", freq)+"Hz");
+				toneFreqStr.set(String.format("%,.2f", freq)+"Hz");
+//            }
+//            else{
+//                toneFreqText.setText("out");
+//				toneFreqStr.set("none");
+//            }    
+        }
+        );
     }
 }
