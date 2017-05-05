@@ -6,6 +6,7 @@
 package guitartuner;
 
 //import java.net.URL;
+import guitartuner.gui.MainPanel;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +31,6 @@ import javafx.stage.WindowEvent;
 public class GUIController extends Application {
 
     private Stage stage;
-    //private FXMLLoader fxmlLoader;
     private ToneGenerator toneGen;
 
     @Override
@@ -44,82 +44,81 @@ public class GUIController extends Application {
 //        this.driverComboBox.getItems().setAll(driverList);
         ComboBox driversCombo = new ComboBox<>(driverList);*/
         
-        HBox h = new HBox();
-        
-        Button btnPlay = new Button();
-        btnPlay.setText("Play");
-        btnPlay.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("handleStartButtonAction...");
-                toneGen.play();
-                System.out.println("handleStartButtonAction ended...");
-            }
-        });
-        
-        Button btnStop = new Button();
-        btnStop.setText("Stop");
-        btnStop.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("handleStopButtonAction...");
-                toneGen.stop();
-                System.out.println("handleStopButtonAction ended...");
-            }
-        });
-        
-        Button btnControl = new Button();
-        btnControl.setText("Control panel");
-        btnControl.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("handleControlButtonAction...");
-                toneGen.openSettings();
-                System.out.println("handleControlButtonAction ended...");
-            }
-        });
-        
-        Button btnPlayE2 = new Button("E2");
-        btnPlayE2.setOnAction(new EventHandler<ActionEvent>() {            
-            @Override
-            public void handle(ActionEvent event) {toneGen.playE2();}});
-        Button btnPlayA2 = new Button("A2");
-        btnPlayA2.setOnAction(new EventHandler<ActionEvent>() {            
-            @Override
-            public void handle(ActionEvent event) {toneGen.playA2();}});
-        Button btnPlayD3 = new Button("D3");
-        btnPlayD3.setOnAction(new EventHandler<ActionEvent>() {            
-            @Override
-            public void handle(ActionEvent event) {toneGen.playD3();}});
-        Button btnPlayG3 = new Button("G3");
-        btnPlayG3.setOnAction(new EventHandler<ActionEvent>() {            
-            @Override
-            public void handle(ActionEvent event) {toneGen.playG3();}});
-        Button btnPlayB3 = new Button("B3");
-        btnPlayB3.setOnAction(new EventHandler<ActionEvent>() {            
-            @Override
-            public void handle(ActionEvent event) {toneGen.playB3();}});
-        Button btnPlayE4 = new Button("E4");
-        btnPlayE4.setOnAction(new EventHandler<ActionEvent>() {            
-            @Override
-            public void handle(ActionEvent event) {toneGen.playE4();}});        
-        
-        StackPane root = new StackPane();
-        //root.getChildren().add(driversCombo);
-        h.getChildren().addAll(btnPlay, btnStop,btnPlayE2, btnPlayA2, btnPlayD3, btnPlayG3, btnPlayB3, btnPlayE4 , btnControl);
-        root.getChildren().add(h);
+//        HBox h = new HBox();
+//        
+//        Button btnPlay = new Button();
+//        btnPlay.setText("Play");
+//        btnPlay.setOnAction(new EventHandler<ActionEvent>() {
+//            
+//            @Override
+//            public void handle(ActionEvent event) {
+//                System.out.println("handleStartButtonAction...");
+//                toneGen.play();
+//                System.out.println("handleStartButtonAction ended...");
+//            }
+//        });
+//        
+//        Button btnStop = new Button();
+//        btnStop.setText("Stop");
+//        btnStop.setOnAction(new EventHandler<ActionEvent>() {
+//            
+//            @Override
+//            public void handle(ActionEvent event) {
+//                System.out.println("handleStopButtonAction...");
+//                toneGen.stop();
+//                System.out.println("handleStopButtonAction ended...");
+//            }
+//        });
+//        
+//        Button btnControl = new Button();
+//        btnControl.setText("Control panel");
+//        btnControl.setOnAction(new EventHandler<ActionEvent>() {
+//            
+//            @Override
+//            public void handle(ActionEvent event) {
+//                System.out.println("handleControlButtonAction...");
+//                toneGen.openSettings();
+//                System.out.println("handleControlButtonAction ended...");
+//            }
+//        });
+//        
+//        Button btnPlayE2 = new Button("E2");
+//        btnPlayE2.setOnAction(new EventHandler<ActionEvent>() {            
+//            @Override
+//            public void handle(ActionEvent event) {toneGen.playE2();}});
+//        Button btnPlayA2 = new Button("A2");
+//        btnPlayA2.setOnAction(new EventHandler<ActionEvent>() {            
+//            @Override
+//            public void handle(ActionEvent event) {toneGen.playA2();}});
+//        Button btnPlayD3 = new Button("D3");
+//        btnPlayD3.setOnAction(new EventHandler<ActionEvent>() {            
+//            @Override
+//            public void handle(ActionEvent event) {toneGen.playD3();}});
+//        Button btnPlayG3 = new Button("G3");
+//        btnPlayG3.setOnAction(new EventHandler<ActionEvent>() {            
+//            @Override
+//            public void handle(ActionEvent event) {toneGen.playG3();}});
+//        Button btnPlayB3 = new Button("B3");
+//        btnPlayB3.setOnAction(new EventHandler<ActionEvent>() {            
+//            @Override
+//            public void handle(ActionEvent event) {toneGen.playB3();}});
+//        Button btnPlayE4 = new Button("E4");
+//        btnPlayE4.setOnAction(new EventHandler<ActionEvent>() {            
+//            @Override
+//            public void handle(ActionEvent event) {toneGen.playE4();}});        
+//        
+//        StackPane root = new StackPane();
+//        //root.getChildren().add(driversCombo);
+//        h.getChildren().addAll(btnPlay, btnStop,btnPlayE2, btnPlayA2, btnPlayD3, btnPlayG3, btnPlayB3, btnPlayE4 , btnControl);
+//        root.getChildren().add(h);
         ////////////////////////////////////////////////////////////
-
-        Scene scene = new Scene(root, 400,250);
+        MainPanel root = new MainPanel();
+        Scene scene = new Scene(root, 550,400);
 
         this.stage.setScene(scene);
         this.stage.setTitle("Tone generator");
         this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
-                System.out.println("handle(): Stage is closing");
                 System.exit(0);
             }
         });
