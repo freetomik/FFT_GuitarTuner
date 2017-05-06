@@ -5,6 +5,7 @@
  */
 package guitartuner.gui;
 
+import guitartuner.NearestToneInfo;
 import guitartuner.ToneGenerator;
 import guitartuner.ToneRecognizer;
 import javafx.application.Platform;
@@ -38,6 +39,7 @@ public class MainPanel extends StackPane{
     private VBox leftVB;
     private HBox bottomHB;
     private VBox bottomVB;
+    private TunePane tunePane;
     
     private Slider sliderFreq;
     
@@ -72,22 +74,27 @@ public class MainPanel extends StackPane{
         topHB = new HBox();
         
         leftVB = new VBox(10);
-        leftVB.setPadding(new Insets(10,10,10,10));
+        leftVB.setPadding(new Insets(10,10,0,10));
         
         leftHB = new HBox(10);
         
-        bottomHB = new HBox(10);
+        tunePane = new TunePane(toneGen);
+        
+        bottomHB = new HBox(20);
         bottomHB.setAlignment(Pos.CENTER);
         bottomVB = new VBox();
         bottomVB.setAlignment(Pos.CENTER);
+        bottomVB.setPadding(new Insets(0,10,10,10));//TOP RIGHT BOTTOM LEFT
         
         labelTitle = new Label("Guitar tuner");
         labelTitle.setFont(Font.font(20));
         
-        labelTones = new Label("Tones generation");
+        labelTones = new Label("Referential\n    tones");
         
-        labelFreq = new Label("Referential frequency");
+        labelFreq = new Label("Referential\n frequency");
+        //labelFreq.setPadding(new Insets(0,0,10,0));
         labelFreqVal = new Label("");
+        labelFreqVal.setPadding(new Insets(0,0,10,0));
         
         sliderFreq = new Slider();
         sliderFreq.setMin(400);
@@ -164,10 +171,15 @@ public class MainPanel extends StackPane{
         
         //////////////////////////////////////////////////////////
         
-        VBox v2 = new VBox();
+        VBox v2 = new VBox(10);
+        v2.setAlignment(Pos.CENTER);
+        v2.setPadding(new Insets(10,10,10,10));
+        
+        Label labelTuning = new Label("  Tune\nOptions");
         
         Button btnTune = new Button();
-        btnTune.setText("Tune");
+        btnTune.setText("Start tuning");
+        btnTune.setMaxWidth(Double.MAX_VALUE);
         btnTune.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -177,6 +189,7 @@ public class MainPanel extends StackPane{
 
         Button btnTuneStop = new Button();
         btnTuneStop.setText("Stop tuning");
+        btnTuneStop.setMaxWidth(Double.MAX_VALUE);
         btnTuneStop.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -184,26 +197,9 @@ public class MainPanel extends StackPane{
             }
         });
 
-        v2.getChildren().addAll(btnTune, btnTuneStop);
+        v2.getChildren().addAll(labelTuning, btnTune, btnTuneStop);
 	v2.setLayoutX(50);
 	v2.setLayoutY(50);
-
-//		toneFreqText = new Text();
-//		toneFreqText.setText("Hello World!");
-//		toneFreqText.setFont(Font.font("Verdana", 20));
-//		toneFreqText.setFill(Color.RED);
-//		toneFreqText.setLayoutX(50);
-//		toneFreqText.setLayoutY(50);
-
-	toneFreqLabel = new Label();
-        toneFreqStr = new SimpleStringProperty();
-//		toneFreqText.setFill(Color.BLUE);
-        toneFreqStr.set("Label");
-        toneFreqLabel.textProperty().bind(toneFreqStr);
-        //this.getChildren().add(v2);
-//        root.getChildren().add(toneFreqText);
-        //this.getChildren().add(toneFreqLabel);
-        v2.getChildren().add(toneFreqLabel);
         
         //////////////////////////////////////////////////////////
         
@@ -221,6 +217,7 @@ public class MainPanel extends StackPane{
         pane.setTop(topHB);
         pane.setLeft(leftVB);
         pane.setRight(v2);
+        pane.setCenter(tunePane);
         pane.setBottom(bottomVB);
         
         this.getChildren().add(pane);
@@ -228,15 +225,25 @@ public class MainPanel extends StackPane{
     
     public void updateText(double freq){
         Platform.runLater(() -> {
-//			if(freq > 20 && freq < 2000){
-//				toneFreqText.setText(String.format("%,.2f", freq)+"Hz");
-				toneFreqStr.set(String.format("%,.2f", freq)+"Hz");
-//            }
-//            else{
-//                toneFreqText.setText("out");
-//				toneFreqStr.set("none");
-//            }    
-        }
+                //toneFreqStr.set(String.format("%,.2f", freq)+"Hz");
+                //System.out.println("REF FREQUENCY:" + toneGen.getRefFrequency());
+                String f = String.format("%.2f", freq)+" Hz";
+                tunePane.propRecognizedFreq.set(String.format("%-10s", f));
+
+                NearestToneInfo info = tunePane.findNearestTone(freq);
+                String deviation;
+                if (info.isDeviationPositive()){
+                    deviation = new String("+"+String.format("%.2f", info.getDeviation())+ " Hz");
+                }
+                else{
+                    deviation = new String("-"+String.format("%.2f", info.getDeviation())+ " Hz");
+                }
+
+                tunePane.propDeviation.set(deviation);
+                tunePane.propNearestToneName.set(info.getName());
+                String nearestFreq = String.format("%.2f", info.getFreq())+ " Hz";
+                tunePane.propNearestToneFreq.set(nearestFreq);
+            }
         );
     }
 }
