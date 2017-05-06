@@ -32,7 +32,7 @@ public class GUIController extends Application {
         Scene scene = new Scene(root, 550,400);
 
         this.stage.setScene(scene);
-        this.stage.setTitle("Tone generator");
+        this.stage.setTitle("Guitar tuner");
         this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 System.exit(0);
