@@ -9,7 +9,6 @@ import guitartuner.NearestToneInfo;
 import guitartuner.ToneGenerator;
 import guitartuner.ToneRecognizer;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -87,12 +86,9 @@ public class MainPanel extends StackPane{
         bottomVB.setPadding(new Insets(0,10,10,10));//TOP RIGHT BOTTOM LEFT
         
         labelTitle = new Label("Guitar tuner");
-        labelTitle.setFont(Font.font(20));
-        
-        labelTones = new Label("Referential\n    tones");
-        
+        labelTitle.setFont(Font.font(20));        
+        labelTones = new Label("Referential\n    tones");       
         labelFreq = new Label("Referential\n frequency");
-        //labelFreq.setPadding(new Insets(0,0,10,0));
         labelFreqVal = new Label("");
         labelFreqVal.setPadding(new Insets(0,0,10,0));
         
@@ -225,8 +221,6 @@ public class MainPanel extends StackPane{
     
     public void updateText(double freq){
         Platform.runLater(() -> {
-                //toneFreqStr.set(String.format("%,.2f", freq)+"Hz");
-                //System.out.println("REF FREQUENCY:" + toneGen.getRefFrequency());
                 String f = String.format("%.2f", freq)+" Hz";
                 tunePane.propRecognizedFreq.set(String.format("%-10s", f));
 
@@ -237,6 +231,19 @@ public class MainPanel extends StackPane{
                 }
                 else{
                     deviation = new String("-"+String.format("%.2f", info.getDeviation())+ " Hz");
+                }
+                
+                if (info.getDeviation() > 1.1){
+                    tunePane.labelDeviation.setStyle("-fx-text-fill: red;-fx-font-size: 20pt;");
+                    tunePane.labelNearestToneFreq.setStyle("-fx-text-fill: red;-fx-font-size: 20pt;");
+                    tunePane.labelNearestToneName.setStyle("-fx-text-fill: red;-fx-font-size: 20pt;");
+                    tunePane.labelRecognizedToneFreq.setStyle("-fx-text-fill: red;-fx-font-size: 20pt;");
+                }
+                else{
+                    tunePane.labelDeviation.setStyle("-fx-text-fill: green;-fx-font-size: 20pt;");
+                    tunePane.labelNearestToneFreq.setStyle("-fx-text-fill: green;-fx-font-size: 20pt;");
+                    tunePane.labelNearestToneName.setStyle("-fx-text-fill: green;-fx-font-size: 20pt;");
+                    tunePane.labelRecognizedToneFreq.setStyle("-fx-text-fill: green;-fx-font-size: 20pt;");
                 }
 
                 tunePane.propDeviation.set(deviation);

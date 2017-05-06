@@ -12,13 +12,8 @@ import com.synthbot.jasiohost.AsioDriverState;
 
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.Set;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 /**
@@ -56,8 +51,6 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
     public void play() {		
         System.out.println(AsioDriver.getDriverNames());
         if (asioDriver == null) {
-            //System.out.println(driverComboBox.getValue().toString());
-            //asioDriver = AsioDriver.getDriver(driverComboBox.getValue().toString());
             asioDriver = AsioDriver.getDriver("ASIO4ALL v2");
             asioDriver.addAsioDriverListener(this);
             activeChannels.add(asioDriver.getChannelOutput(0));
@@ -110,15 +103,6 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
             asioDriver.openControlPanel();          
         }
     }
-
-    /*public void shutdown() {
-            System.out.println("shutdown()");
-    if (asioDriver != null) {
-                    asioDriver.shutdownAndUnloadDriver();
-                    activeChannels.clear();
-                    asioDriver = null;
-    }
-    }*/
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -183,37 +167,31 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
                 diffOctaves = 2;
                 diffSemitones = 5;
                 frequency = referentialFrequency/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//82.41;
-                //System.out.println("82.41 vs "+frequency);
                 break;
             case A2:
                 diffOctaves = 2;
                 diffSemitones = 0;
                 frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//110;
-                //System.out.println("110 vs "+frequency);
                 break;
             case D3:
                 diffOctaves = 1;
                 diffSemitones = 7;
                 frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//146.8;
-                //System.out.println("146.8 vs "+frequency);
                 break;
             case G3:
                 diffOctaves = 1;
                 diffSemitones = 2;
                 frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//196;
-                //System.out.println("196 vs "+frequency);
                 break;
             case B3:
                 diffOctaves = 0;
                 diffSemitones = 10;
                 frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//246.9;
-                //System.out.println("246.9 vs "+frequency);
                 break;
             case E4:
                 diffOctaves = 0;
                 diffSemitones = 5;
                 frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//329.6;
-                //System.out.println("329.6 vs "+frequency);
                 break;
             default:
                 frequency = 110;    
@@ -266,7 +244,6 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
     }
     
     public double[][] getAllTonesFreqsRelativeToRefFreq(){
-        //System.out.println("-------------INNER REF FREQ:" + this.referentialFrequency);
         double[][] freqs = new double[octaves][halftonesPerScale];
         int[][] n = getHalftonesDiffsToA4();
         
@@ -274,8 +251,7 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
             for (int i = 0; i < halftonesPerScale; i++){
                 freqs[octave][i] = referentialFrequency*(Math.pow(2, (n[octave][i]/12.0)));
             }
-        }
-        
+        }        
         return freqs;
     }
     

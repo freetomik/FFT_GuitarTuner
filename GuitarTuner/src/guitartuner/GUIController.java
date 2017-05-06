@@ -5,7 +5,6 @@
  */
 package guitartuner;
 
-//import java.net.URL;
 import guitartuner.gui.MainPanel;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -20,12 +19,10 @@ import javafx.stage.WindowEvent;
 public class GUIController extends Application {
 
     private Stage stage;
-    //private ToneGenerator toneGen;
 
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
-        //toneGen = new ToneGenerator();
         System.out.println("start()");
         
         MainPanel root = new MainPanel();
