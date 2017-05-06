@@ -232,16 +232,20 @@ public class ToneRecognizer implements AsioDriverListener {
             try{
                 asioDriver = AsioDriver.getDriver(driver);
                 // the lower sample rate, the better tuning accuracy, but longer time to fill the buffer
-                if (asioDriver.canSampleRate(8000))
-                    asioDriver.setSampleRate(8000);
+                // trying to set the lowest possible, 44100 is usually default
+                if (asioDriver.canSampleRate(32000)) asioDriver.setSampleRate(32000);
+                if (asioDriver.canSampleRate(22050)) asioDriver.setSampleRate(22050);
+                if (asioDriver.canSampleRate(16000)) asioDriver.setSampleRate(16000);
+                if (asioDriver.canSampleRate(11025)) asioDriver.setSampleRate(11025);
+                if (asioDriver.canSampleRate(8000)) asioDriver.setSampleRate(8000);
                 asioDriver.addAsioDriverListener(host);
                 activeChannels.add(asioDriver.getChannelOutput(0));
                 activeChannels.add(asioDriver.getChannelOutput(1));
 
                 activeChannels.add(asioDriver.getChannelInput(0));
                 activeChannels.add(asioDriver.getChannelInput(1));
-                bufferSize = asioDriver.getBufferPreferredSize();	// 512 by default
-                sampleRate = asioDriver.getSampleRate();			// 44100.0 by default
+                bufferSize = asioDriver.getBufferPreferredSize();  // usually 512 by default
+                sampleRate = asioDriver.getSampleRate();           // usually 44100.0 by default
                 output = new float[bufferSize];
 //                reInitTonesAndChords(refFreq);
                 asioDriver.createBuffers(activeChannels);
