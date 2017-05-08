@@ -14,10 +14,11 @@ import guitartuner.gui.MainPanel;
 import java.util.HashSet;
 import java.util.Set;
 import org.jtransforms.fft.DoubleFFT_1D;
+import org.jtransforms.dct.DoubleDCT_1D;
 
 /**
  *
- * @author Tomáš
+ * @author Tomáš Hudziec
  */
 public class ToneRecognizer implements AsioDriverListener {
 
@@ -30,7 +31,8 @@ public class ToneRecognizer implements AsioDriverListener {
     private double sampleRate;
     private float[] output;
     private double[] outputTest;
-    private DoubleFFT_1D fft;
+//    private DoubleFFT_1D fft;
+    private DoubleDCT_1D fft;
     private double[][] fftBuffer;
     private static int fftBufferSize;
     private int bufferCount;
@@ -49,7 +51,8 @@ public class ToneRecognizer implements AsioDriverListener {
         bufferCount = 1;
         activeChannels = new HashSet<AsioChannel>();
         fftBufferSize = 16384;
-        fft = new DoubleFFT_1D(fftBufferSize);
+//        fft = new DoubleFFT_1D(fftBufferSize);
+        fft = new DoubleDCT_1D(fftBufferSize);
         fftBuffer = new double[bufferCount] [fftBufferSize];
         index = new int[bufferCount];
         for(int i=0;i<bufferCount;i++){
@@ -91,10 +94,10 @@ public class ToneRecognizer implements AsioDriverListener {
 				channelInfo.read(output);
 				// circular buffer implementation
 				for(int i=0;i<bufferSize; i++){
-					for(int j=0;j<bufferCount;j++){ //this for loop is unneccesary IMO
-						if (index[j]==fftBufferSize)
-							break;
-					}
+//					for(int j=0;j<bufferCount;j++){ //this for loop is unneccesary IMO
+//						if (index[j]==fftBufferSize)
+//							break;
+//					}
 					for(int j=0;j<bufferCount;j++){
 						fftBuffer[j][index[j]] = output[i];
 					}
@@ -105,8 +108,10 @@ public class ToneRecognizer implements AsioDriverListener {
 				for(int i=0;i<bufferCount;i++){
 					if (index[i]== fftBufferSize){
 						fftBuffer[i] = applyHannWindow(fftBuffer[i]);
-						fft.realForward(fftBuffer[i]);
-						double[] fftData = fftAbs(fftBuffer[i]);                         
+//						fft.realForward(fftBuffer[i]);
+						fft.forward(fftBuffer[i], false);
+//						double[] fftData = fftAbs(fftBuffer[i]);                         
+						double[] fftData = fftBuffer[i];                         
 
 						int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
 //							int baseFrequencyIndex = getBaseFrequencyIndexHPS(fftData);
