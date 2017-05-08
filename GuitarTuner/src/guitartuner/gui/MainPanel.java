@@ -104,8 +104,8 @@ public class MainPanel extends StackPane{
         sliderFreq.valueProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                labelFreqVal.setText(String.format("%.0f Hz", newValue));
-                toneGen.setRefFrequency((Double) newValue);
+                labelFreqVal.setText(String.format("%d Hz", Math.round((Double) newValue)));
+                toneGen.setRefFrequency((double)Math.round((Double) newValue));
                 //toneGen.play(toneGen.lastPlayedTone); // change playXY methods to play(XY)
             }
         });
