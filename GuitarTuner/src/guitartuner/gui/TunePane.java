@@ -7,7 +7,6 @@ package guitartuner.gui;
 
 import guitartuner.NearestToneInfo;
 import guitartuner.ToneGenerator;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
@@ -27,12 +26,12 @@ public class TunePane extends StackPane{
     private VBox vboxRecognized;
     
     private Label labelNearestTone;
-    private Label labelNearestToneName;
-    private Label labelNearestToneFreq;
+    protected Label labelNearestToneName;
+    protected Label labelNearestToneFreq;
     
     private Label labelRecognizedTone;
-    private Label labelRecognizedToneFreq;
-    private Label labelDeviation;
+    protected Label labelRecognizedToneFreq;
+    protected Label labelDeviation;
     
     public StringProperty propNearestToneName;
     public StringProperty propNearestToneFreq;
@@ -58,15 +57,6 @@ public class TunePane extends StackPane{
         allTonesNames = generator.getAllTones();
         halftoneDiffs = generator.getHalftonesDiffsToA4();
         allTonesFreqs = generator.getAllTonesFreqsRelativeToRefFreq();
-        //System.out.println(" "+ allTonesNames[7][9]+" "+allTonesFreqs[7][9]+" Hz.\n[A8 7040.0 Hz]");
-        
-        /*for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 12; j++){
-                System.out.print(allTonesFreqs[i][j]+"   ");
-            }
-            System.out.println();
-        }*/
-        //System.out.println("The nearest tone to frequency 16.35 Hz is "+findNearestTone(16.65).getName());
         
         propRecognizedFreq = new SimpleStringProperty();
         propRecognizedFreq.set("None");
@@ -97,24 +87,14 @@ public class TunePane extends StackPane{
         getChildren().add(hbox);
     }
     
-    //ToDo: optimalize
     public NearestToneInfo findNearestTone(double freq){
         allTonesFreqs = generator.getAllTonesFreqsRelativeToRefFreq();
-        /*System.out.println("********************************************");
-        for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 12; j++){
-                System.out.print(allTonesFreqs[i][j]+"   ");
-            }
-            System.out.println();
-        }*/
-        
         double distance = Math.abs(allTonesFreqs[0][0]-freq);
         int idx1 = 0;
         int idx2 = 0;
         for (int i = 0; i < allTonesFreqs.length; i++){
             for (int j = 0; j < allTonesFreqs[0].length; j++){
                 double cdistance = Math.abs(allTonesFreqs[i][j]-freq);
-                //if (i==0 && j == 1) System.out.println("Cdistance:"+cdistance + "  Distance:"+distance);
                 if (cdistance < distance){
                     idx1 = i;
                     idx2 = j;
