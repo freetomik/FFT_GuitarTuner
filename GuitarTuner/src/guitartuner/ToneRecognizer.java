@@ -43,13 +43,6 @@ public class ToneRecognizer implements AsioDriverListener {
 	private double sinusFreq;
    
 	public ToneRecognizer(MainPanel mainPanel) {
-//		buffersize = 512;
-//		samplerate = 44100.0;
-//		sampleindex = 0;
-//		sinusfreq = 440.0;
-//        fftbuffersize = 16384;
-//		outputtest = new double[fftbuffersize];
-//        fft = new doublefft_1d(fftbuffersize);
         host = this;
         controller = mainPanel;
         runRecognizer = true;
@@ -94,68 +87,40 @@ public class ToneRecognizer implements AsioDriverListener {
 	@Override
 	public void bufferSwitch(long sampleTime, long samplePosition, Set<AsioChannel> activeChannels) {
         for (AsioChannel channelInfo : activeChannels) {
-//            if(runRecognizer){
-//				if(channelInfo.getChannelIndex()==0){
-				if(channelInfo.isInput()){
-					channelInfo.read(output);
-					// circular buffer implementation
-					for(int i=0;i<bufferSize; i++){
-						for(int j=0;j<bufferCount;j++){ //this for loop is unneccesary IMO
-							if (index[j]==fftBufferSize)
-								break;
-						}
-						for(int j=0;j<bufferCount;j++){
-							fftBuffer[j][index[j]] = output[i];
-						}
-						for(int j=0;j<bufferCount;j++){
-							index[j]++;
-						}
+			if(channelInfo.isInput()){
+				channelInfo.read(output);
+				// circular buffer implementation
+				for(int i=0;i<bufferSize; i++){
+					for(int j=0;j<bufferCount;j++){ //this for loop is unneccesary IMO
+						if (index[j]==fftBufferSize)
+							break;
 					}
-					for(int i=0;i<bufferCount;i++){
-						if (index[i]== fftBufferSize){
-							fftBuffer[i] = applyHannWindow(fftBuffer[i]);
-							fft.realForward(fftBuffer[i]);
-							double[] fftData = fftAbs(fftBuffer[i]);                         
-
-							int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
-//							int baseFrequencyIndex = getBaseFrequencyIndexHPS(fftData);
-
-							double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
-							baseFrequency /= 2;		// only one half of spectrum is examined 
-							controller.updateText(baseFrequency);
-
-							index[i]=0;
-						}
+					for(int j=0;j<bufferCount;j++){
+						fftBuffer[j][index[j]] = output[i];
+					}
+					for(int j=0;j<bufferCount;j++){
+						index[j]++;
 					}
 				}
-//            }
+				for(int i=0;i<bufferCount;i++){
+					if (index[i]== fftBufferSize){
+						fftBuffer[i] = applyHannWindow(fftBuffer[i]);
+						fft.realForward(fftBuffer[i]);
+						double[] fftData = fftAbs(fftBuffer[i]);                         
+
+						int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
+//							int baseFrequencyIndex = getBaseFrequencyIndexHPS(fftData);
+
+						double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
+						baseFrequency /= 2;		// only one half of spectrum is examined 
+						controller.updateText(baseFrequency);
+
+						index[i]=0;
+					}
+				}
+			}
         }
 	}
-
-	public void setSinFreq(double f) { sinusFreq = f; }
-
-	public void setSampleRate(double s) { sampleRate = s; }
-
-	public void setFFTBufSize(int b) { fftBufferSize = b; }
-
-	public double[] generateSinus() {
-		for (int i = 0; i < fftBufferSize; i++, sampleIndex++)
-		  outputTest[i] = (double) Math.sin(2 * Math.PI * sinusFreq * sampleIndex / sampleRate);
-		return outputTest;
-	}
-	
-	public double tune() {
-		double[] buffer = generateSinus();
-		buffer = applyHannWindow(buffer);
-		fft.realForward(buffer);
-		double[] fftData = fftAbs(buffer);                         
-
-		int baseFrequencyIndex = getBaseFrequencyIndex(fftData);
-		double baseFrequency = getFrequencyForIndex(baseFrequencyIndex, fftData.length, (int)sampleRate);
-
-		return baseFrequency;
-	}
-	
 
 	// taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
     private static double[] fftAbs(double[] buffer){
@@ -177,7 +142,6 @@ public class ToneRecognizer implements AsioDriverListener {
         }
         return out;
     }
-
 
 	// Harmonic Product Spectrum method of finding fundamental frequency of tone
 	// from thesis FFT Guitar Tuner by Jeff Wang and Kay-Won Chang
@@ -247,7 +211,6 @@ public class ToneRecognizer implements AsioDriverListener {
                 bufferSize = asioDriver.getBufferPreferredSize();  // usually 512 by default
                 sampleRate = asioDriver.getSampleRate();           // usually 44100.0 by default
                 output = new float[bufferSize];
-//                reInitTonesAndChords(refFreq);
                 asioDriver.createBuffers(activeChannels);
                 asioDriver.start();
                 return true;
