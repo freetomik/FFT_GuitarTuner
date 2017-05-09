@@ -23,7 +23,7 @@ import org.jtransforms.dct.DoubleDCT_1D;
 public class ToneRecognizer implements AsioDriverListener {
 
 
-	// taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
+	// declarations taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
     private AsioDriver asioDriver;
     private Set<AsioChannel> activeChannels;
     private int[] index;
@@ -94,10 +94,6 @@ public class ToneRecognizer implements AsioDriverListener {
 				channelInfo.read(output);
 				// circular buffer implementation
 				for(int i=0;i<bufferSize; i++){
-//					for(int j=0;j<bufferCount;j++){ //this for loop is unneccesary IMO
-//						if (index[j]==fftBufferSize)
-//							break;
-//					}
 					for(int j=0;j<bufferCount;j++){
 						fftBuffer[j][index[j]] = output[i];
 					}
@@ -128,6 +124,7 @@ public class ToneRecognizer implements AsioDriverListener {
 	}
 
 	// taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
+	/*
     private static double[] fftAbs(double[] buffer){
         double[] fftAbs = new double[fftBufferSize/2]; 	// due to symmetry, fft.realForward() computes only 1.half
         for(int i=0;i<fftAbs.length;i++){
@@ -137,6 +134,7 @@ public class ToneRecognizer implements AsioDriverListener {
         }
         return fftAbs;
     }
+	*/
     
 	// taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
     public double[] applyHannWindow(double[] input){
@@ -151,6 +149,7 @@ public class ToneRecognizer implements AsioDriverListener {
 	// Harmonic Product Spectrum method of finding fundamental frequency of tone
 	// from thesis FFT Guitar Tuner by Jeff Wang and Kay-Won Chang
 	// and http://musicweb.ucsd.edu/~trsmyth/analysis/Harmonic_Product_Spectrum.html
+	/*
 	private int getBaseFrequencyIndexHPS(double[] spectrum) {
 		double maxVal = Double.NEGATIVE_INFINITY;
 		int maxInd = 0;
@@ -168,6 +167,7 @@ public class ToneRecognizer implements AsioDriverListener {
 		}
 		return maxInd;
 	}
+	*/
 
 	private int getBaseFrequencyIndex(double[] spectrum) {
 		double maxVal = Double.NEGATIVE_INFINITY;
@@ -195,7 +195,6 @@ public class ToneRecognizer implements AsioDriverListener {
 		return (float)index * (float)rate / (float)size;
 }
     
-	// taken from Bachelor thesis at https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462
     public boolean startAsio(String driver, int refFreq){
         if (asioDriver == null) {
             try{
