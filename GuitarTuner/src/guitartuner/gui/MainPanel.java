@@ -134,32 +134,32 @@ public class MainPanel extends StackPane{
             }
         });
         
-        btnPlayE2 = new Button("E2");
+        btnPlayE2 = new Button("E4");
         btnPlayE2.setMaxWidth(Double.MAX_VALUE);
         btnPlayE2.setOnAction(new EventHandler<ActionEvent>() {            
             @Override
             public void handle(ActionEvent event) {toneGen.playE2();}});
-        btnPlayA2 = new Button("A2");
+        btnPlayA2 = new Button("A4");
         btnPlayA2.setMaxWidth(Double.MAX_VALUE);
         btnPlayA2.setOnAction(new EventHandler<ActionEvent>() {            
             @Override
             public void handle(ActionEvent event) {toneGen.playA2();}});
-        btnPlayD3 = new Button("D3");
+        btnPlayD3 = new Button("D5");
         btnPlayD3.setMaxWidth(Double.MAX_VALUE);
         btnPlayD3.setOnAction(new EventHandler<ActionEvent>() {            
             @Override
             public void handle(ActionEvent event) {toneGen.playD3();}});
-        btnPlayG3 = new Button("G3");
+        btnPlayG3 = new Button("G5");
         btnPlayG3.setMaxWidth(Double.MAX_VALUE);
         btnPlayG3.setOnAction(new EventHandler<ActionEvent>() {            
             @Override
             public void handle(ActionEvent event) {toneGen.playG3();}});
-        btnPlayB3 = new Button("B3");
+        btnPlayB3 = new Button("B5");
         btnPlayB3.setMaxWidth(Double.MAX_VALUE);
         btnPlayB3.setOnAction(new EventHandler<ActionEvent>() {            
             @Override
             public void handle(ActionEvent event) {toneGen.playB3();}});
-        btnPlayE4 = new Button("E4");
+        btnPlayE4 = new Button("E6");
         btnPlayE4.setMaxWidth(Double.MAX_VALUE);
         btnPlayE4.setOnAction(new EventHandler<ActionEvent>() {            
             @Override
