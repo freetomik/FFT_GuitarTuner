@@ -163,39 +163,37 @@ public class ToneGenerator implements Initializable, AsioDriverListener {
         int diffOctaves;
         int diffSemitones;
         switch (tone){
-            case E2:                    
+            case E2://82.41;
                 diffOctaves = 2;
                 diffSemitones = 5;
-                frequency = referentialFrequency/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//82.41;
                 break;
-            case A2:
+            case A2://110;
                 diffOctaves = 2;
                 diffSemitones = 0;
-                frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//110;
                 break;
-            case D3:
+            case D3://146.8;
                 diffOctaves = 1;
                 diffSemitones = 7;
-                frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//146.8;
                 break;
-            case G3:
+            case G3://196;
                 diffOctaves = 1;
                 diffSemitones = 2;
-                frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//196;
                 break;
-            case B3:
+            case B3://246.9;
                 diffOctaves = 0;
                 diffSemitones = 10;
-                frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//246.9;
                 break;
-            case E4:
+            case E4://329.6;
                 diffOctaves = 0;
                 diffSemitones = 5;
-                frequency = (referentialFrequency-diffSemitones*Math.pow(2, 1.0 / 12))/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//329.6;
                 break;
             default:
-                frequency = 110;    
+                diffOctaves = 0;
+                diffSemitones = 0;
         }
+		frequency = referentialFrequency/(Math.pow(Math.pow(2, 1.0 / 12),12*diffOctaves+diffSemitones));//82.41;
+		// low tones are not heard, raise all tones by 2 octaves
+		frequency *= 4.0;
     }
 
     public void setFrequency(double newValue){
