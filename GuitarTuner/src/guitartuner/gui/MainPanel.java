@@ -227,13 +227,17 @@ public class MainPanel extends StackPane{
                 NearestToneInfo info = tunePane.findNearestTone(freq);
                 String deviation;
                 if (info.isDeviationPositive()){
-                    deviation = new String("+"+String.format("%.2f", info.getDeviation())+ " Hz");
+//                    deviation = new String("+"+String.format("%.2f", info.getDeviation())+ " Hz");
+                    deviation = new String("+"+String.format("%.2f", info.getDeviationInCents())+ " c");
                 }
                 else{
-                    deviation = new String("-"+String.format("%.2f", info.getDeviation())+ " Hz");
+//                    deviation = new String("-"+String.format("%.2f", info.getDeviation())+ " Hz");
+                    deviation = new String("-"+String.format("%.2f", info.getDeviationInCents())+ " c");
                 }
                 
-                if (info.getDeviation() > 1.1){
+//                if (info.getDeviation() > 1.1){
+                if (info.getDeviationInCents() > 10){
+				// constant 10 set according to GuitaTuna for Android, more strictly it should be 6, but our measuring is not so accurate
                     tunePane.labelDeviation.setStyle("-fx-text-fill: red;-fx-font-size: 20pt;");
                     tunePane.labelNearestToneFreq.setStyle("-fx-text-fill: red;-fx-font-size: 20pt;");
                     tunePane.labelNearestToneName.setStyle("-fx-text-fill: red;-fx-font-size: 20pt;");

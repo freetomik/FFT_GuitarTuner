@@ -90,6 +90,7 @@ public class TunePane extends StackPane{
     public NearestToneInfo findNearestTone(double freq){
         allTonesFreqs = generator.getAllTonesFreqsRelativeToRefFreq();
         double distance = Math.abs(allTonesFreqs[0][0]-freq);
+		double distanceInCents = 0;
         int idx1 = 0;
         int idx2 = 0;
         for (int i = 0; i < allTonesFreqs.length; i++){
@@ -102,11 +103,22 @@ public class TunePane extends StackPane{
                 }
             }
         }
-        boolean positive = false;
+        boolean positive;
+		// positive
         if ((freq - allTonesFreqs[idx1][idx2]) >= 0){
             positive = true;
+			// cent is one hundredth of semitone
+			// distanceInCents = 100 * distanceInHertzs / semitoneSizeInHertzs;
+			distanceInCents = 100 *
+				(distance)/(allTonesFreqs[idx1][idx2]*(Math.pow(2, (1/12.0))) - allTonesFreqs[idx1][idx2]);
         }
-        NearestToneInfo nearest = new NearestToneInfo(allTonesNames[idx1][idx2], allTonesFreqs[idx1][idx2], distance, positive, idx1, idx2);
+		// negative
+		else {
+            positive = false;
+			distanceInCents = 100 *
+				(distance)/(allTonesFreqs[idx1][idx2] - allTonesFreqs[idx1][idx2]/(Math.pow(2, (1/12.0))));
+		}
+        NearestToneInfo nearest = new NearestToneInfo(allTonesNames[idx1][idx2], allTonesFreqs[idx1][idx2], distance, distanceInCents, positive, idx1, idx2);
         return nearest;
     }
     
