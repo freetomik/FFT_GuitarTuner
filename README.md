@@ -20,6 +20,8 @@ It uses
 - [JAsioHost](https://github.com/mhroth/jasiohost) for communication with ASIO driver and
 - [JLargeArrays](https://github.com/IcmVis/JLargeArrays), which are used internally by JTransforms.
 
+Executable jar file was created with [JarSplice](http://ninjacave.com/jarsplice).
+
 ## Authors
 ### Tomáš Hudziec
 - tuning mechanism
@@ -45,5 +47,5 @@ It uses
 ## License
 MIT License
 
-Czech task:
+#### School project task (in Czech)
 Výsledkem projektu by měla být aplikace pracující jako ladička zvoleného hudebního nástroje (kytary, houslí apod.) Aplikace by měla v reálném čase vzorkovat vstupní zvukový signál a zjišťovat jeho frekvenci, indikovat ji a indikovat též nejbližší ladicí tón a odchylku. Aplikace by měla mít i možnost kalibrace na "standardní stupnici" i "relativní ladění" se zadaným/zahraným vztažným tónem. Pro snadné používání programu by aplikace měla mít intuitivní grafické uživatelské rozhraní. Program by měl umět též generovat/přehrávat referenční tóny.
