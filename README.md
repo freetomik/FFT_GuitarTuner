@@ -1,4 +1,4 @@
-# Guitar Tuner
+# FFT Guitar Tuner
 
 ## Description
 This JavaFX application listens via microphone for music tone and displays its frequency and deviation from nearest musical note. It also generates guitar tones for tuning by ear. For both tuning and generating referential frequency can be set.
@@ -16,7 +16,7 @@ The GuitarTuner directory contains some files from NetBeans 8.2 project using Ma
 GuitarTuner is based on ChordRecognizer created as [Bachelor Thesis](https://www.vutbr.cz/studium/zaverecne-prace?zp_id=88462) at BUT FIT.
 
 It uses
-- [JTransforms](https://github.com/wendykierp/JTransforms) for Fast Fourier Transform,
+- [JTransforms](https://github.com/wendykierp/JTransforms) for Fast Fourier Transform (FFT),
 - [JAsioHost](https://github.com/mhroth/jasiohost) for communication with ASIO driver and
 - [JLargeArrays](https://github.com/IcmVis/JLargeArrays), which are used internally by JTransforms.
 
